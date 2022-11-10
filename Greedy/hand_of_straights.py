@@ -1,5 +1,4 @@
 from typing import List
-import math
 
 
 class Solution:
@@ -8,7 +7,7 @@ class Solution:
             return False
 
         hand.sort()
-        straights = [[]] * (len(hand) // groupSize)
+        straights = [[] for i in range((len(hand) // groupSize))]
 
         for num in hand:
             appended = False
@@ -27,7 +26,3 @@ class Solution:
                 return False
 
         return True
-
-
-s = Solution()
-s.isNStraightHand([1,2,3,6,2,3,4,7,8], 3)
