@@ -1,33 +1,41 @@
-from typing import List
-import math
+class Node:
+
+    def __init__(self, name):
+        self.name = name
+        self.neighbors = []
 
 
-class Solution:
-    def isNStraightHand(self, hand: List[int], groupSize: int) -> bool:
-        if len(hand) % groupSize != 0:
-            return False
-
-        hand.sort()
-        straights = [[]] * (len(hand) // groupSize)
-
-        for num in hand:
-            appended = False
-            for straight in straights:
-                if len(straight) == groupSize:
-                    continue
-                if not straight:
-                    straight.append(num)
-                    appended = True
-                    break
-                if straight[-1] == num - 1:
-                    straight.append(num)
-                    appended = True
-                    break
-            if not appended:
-                return False
-
-        return True
+A = Node("A")
+B = Node("B")
+C = Node("C")
+D = Node("D")
+E = Node("E")
+F = Node("F")
+G = Node("G")
+A.neighbors.extend([B, C, E])
+B.neighbors.extend([A, D, F])
+C.neighbors.extend([A, G])
+D.neighbors.extend([B])
+E.neighbors.extend([A, F])
+F.neighbors.extend([B, E])
+G.neighbors.extend([C])
 
 
-s = Solution()
-s.isNStraightHand([1,2,3,6,2,3,4,7,8], 3)
+def dfs(node, visited):
+    print(node.name)
+    visited.add(node)
+    for neighbor in node.neighbors:
+        if neighbor not in visited:
+            dfs(neighbor, visited)
+
+
+def dfs2(node, visited):
+    print(node.name)
+    if node in visited:
+        return
+    visited.add(node)
+    for neighbor in node.neighbors:
+        dfs(neighbor, visited)
+
+
+dfs2(A, set())

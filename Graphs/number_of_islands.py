@@ -1,31 +1,54 @@
 from typing import List
+from collections import deque
 
 
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        seen = set()
-        unvisited = set()
-        for i in range(len(grid)):
-            for j in range(len(grid[0])):
-                if grid[i][j] == "1":
-                    unvisited.add((i, j))
+        visited = set()
+        ROWS, COLS = len(grid), len(grid[0])
+        res = 0
 
-        count = 0
-        while unvisited:
-            count += 1
-            stack = [unvisited.pop()]
-            seen.add(stack[0])
-            while stack:
-                v = stack.pop()
-                neighbors = [(v[0], v[1] - 1), (v[0], v[1] + 1), (v[0] + 1, v[1]), (v[0] - 1, v[1])]
-                for neighbor in neighbors:
-                    if not self.validIndex(neighbor, grid) or grid[neighbor[0]][neighbor[1]] == "0":
+        def dfs(r, c):
+            if (
+                    r < 0 or c < 0
+                    or r >= ROWS or c >= COLS
+                    or grid[r][c] == "0"
+                    or (r, c) in visited
+            ):
+                return
+
+            visited.add((r, c))
+            dfs(r - 1, c)
+            dfs(r + 1, c)
+            dfs(r, c - 1)
+            dfs(r, c + 1)
+
+        # either use dfs or bfs. dfs is more readable imo
+        def bfs(r, c):
+            q = deque()
+            q.appendleft((r, c))
+            visited.add((r, c,))
+
+            while q:
+                r, c = q.pop()
+                if (
+                        r < 0 or c < 0
+                        or r >= ROWS or c >= COLS
+                        or grid[r][c] == "0"
+                ):
+                    continue
+
+                neighbors = [(r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)]
+                for n in neighbors:
+                    if n in visited:
                         continue
-                    if neighbor not in seen:
-                        stack.append(neighbor)
-                        seen.add(neighbor)
-                        unvisited.remove(neighbor)
-        return count
+                    visited.add(n)
+                    q.appendleft(n)
 
-    def validIndex(self, index, grid):
-        return 0 <= index[0] < len(grid) and 0 <= index[1] < len(grid[0])
+        for r in range(ROWS):
+            for c in range(COLS):
+                if (r, c) not in visited and grid[r][c] == "1":
+                    res += 1
+                    dfs(r, c)  # or bfs(r,c)
+
+        return res
