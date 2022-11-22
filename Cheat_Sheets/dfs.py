@@ -57,16 +57,13 @@ def dfs_iterative(node):
 # in dfs: https://11011110.github.io/blog/2013/12/17/stack-based-graph-traversal.html
 # The problem is that all neighbors of the start node are marked as seen, and only
 # not-yet-seen nodes are pushed onto the stack. Imagine a simple graph:
-# TODO: Think of minimal example that guarantees that the order is non-DFS conforming
 def dfs_iterative_wrong(node):
     stack = [node]
     seen = {node}
     while stack:
         cur = stack.pop()
         print(cur)
-        for neighbor in reversed(cur.neighbors):
-            # without reversed we also get a valid dfs, but a
-            # different order than the recursive versions.
+        for neighbor in cur.neighbors:
             if neighbor not in seen:
                 seen.add(neighbor)
                 stack.append(neighbor)

@@ -1,41 +1,42 @@
-class Node:
-
-    def __init__(self, name):
-        self.name = name
-        self.neighbors = []
+from collections import deque
 
 
-A = Node("A")
-B = Node("B")
-C = Node("C")
-D = Node("D")
-E = Node("E")
-F = Node("F")
-G = Node("G")
-A.neighbors.extend([B, C, E])
-B.neighbors.extend([A, D, F])
-C.neighbors.extend([A, G])
-D.neighbors.extend([B])
-E.neighbors.extend([A, F])
-F.neighbors.extend([B, E])
-G.neighbors.extend([C])
+class Solution:
+    def orangesRotting(self, grid) -> int:
+        distance = [0]
+        max_distance = [0]
+        ROWS, COLS = len(grid), len(grid[0])
+        dr = [-1, 1, 0, 0]
+        dc = [0, 0, -1, 1]
+
+        def bfs(r, c):
+            visited = {(r, c)}
+            q = deque()
+            q.append((r, c))
+
+            while q:
+                cur = q.pop()
+                max_distance[0] = max(max_distance[0], distance[0])
+
+                for i in range(4):
+                    nr, nc = cur[0] + dr[i], cur[1] + dc[i]
+                    if (
+                            0 <= nr < ROWS
+                            and 0 <= nc < COLS
+                            and grid[nr][nc] == 1
+                    ):
+                        q.appendleft((nr, nc))
+                        visited.add((nr, nc))
+
+                distance[0] += 1
+
+        for row in range(ROWS):
+            for col in range(COLS):
+                if grid[row][col] == 2:
+                    bfs(row, col)
+
+        return max_distance[0]
 
 
-def dfs(node, visited):
-    print(node.name)
-    visited.add(node)
-    for neighbor in node.neighbors:
-        if neighbor not in visited:
-            dfs(neighbor, visited)
-
-
-def dfs2(node, visited):
-    print(node.name)
-    if node in visited:
-        return
-    visited.add(node)
-    for neighbor in node.neighbors:
-        dfs(neighbor, visited)
-
-
-dfs2(A, set())
+sol = Solution()
+print(sol.orangesRotting([[2,1,1],[1,1,0],[0,1,1]]))
