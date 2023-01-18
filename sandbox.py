@@ -1,72 +1,34 @@
-class Solution:
-    def solveNQueens(self, n: int) -> List[List[str]]:
-        res_positions = []
-        queen_positions = []
+from typing import List
 
-        def dfs(num_queens, free_coords):
-            if num_queens == n:
-                res_positions.append(queen_positions.copy())
-                return
 
-            if not free_coords:
-                return
+class NumArray:
 
-            while free_coords:
-                coord = free_coords.pop()
-                queen_positions.append(coord)
-                x, y = coord
-                new_free_coords = free_coords.copy()
+    def __init__(self, nums: List[int]):
+        self.sums = [0] * len(nums)
+        self.sums[0] = nums[0]
 
-                # remove up/down, left/right
-                for i in range(n):
-                    new_free_coords.discard((x, i))
-                    new_free_coords.discard((i, y))
+        for i in range(1, len(nums)):
+            self.sums[i] = nums[i] + self.sums[i-1]
 
-                # remove diagonals
-                i, j = x, y
-                # print("pos", x, y)
-                while i > 0 and j > 0:
-                    i -= 1
-                    j -= 1
+    def update(self, index: int, val: int) -> None:
+        old = self.sums[index]
+        self.sums[index] = val
+        if index > 0:
+            self.sums[index] += self.sums[index - 1]
+        diff = self.sums[index] - old
 
-                while i < n and j < n:
-                    # print("diag1", i, j)
-                    new_free_coords.discard((i, j))
-                    i += 1
-                    j += 1
+        for i in range(index+1, len(self.sums)):
+            self.sums[index] += diff
 
-                i, j = x, y
-                while i > 0 and j < n - 1:
-                    i -= 1
-                    j += 1
+    def sumRange(self, left: int, right: int) -> int:
+        print(self.sums)
+        if left == 0:
+            return self.sums[right]
+        return self.sums[right] - self.sums[left - 1]
 
-                while i < n and j >= 0:
-                    # print("diag2", i, j)
-                    new_free_coords.discard((i, j))
-                    i += 1
-                    j -= 1
 
-                dfs(num_queens + 1, new_free_coords)
-                queen_positions.remove(coord)
-
-        initial_coords = set()
-        for i in range(n):
-            for j in range(n):
-                initial_coords.add((i, j))
-
-        dfs(0, initial_coords)
-        res = []
-
-        # convert res
-        dots = ""
-        for k in range(n):
-            dots += "."
-
-        for i in range(len(res_positions)):
-            res.append([])
-            for j in range(n):
-                res[i].append(dots)
-            for x, y in res_positions[i]:
-                res[i][x] = res[i][x][:y] + "Q" + res[i][x][y + 1:]
-
-        return res
+# Your NumArray object will be instantiated and called as such:
+numArray = NumArray([1, 3, 5])
+numArray.sumRange(0, 2)
+numArray.update(1, 2)
+numArray.sumRange(0, 2)
