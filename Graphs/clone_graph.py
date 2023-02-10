@@ -12,18 +12,18 @@ class Solution:
         if node is None:
             return None
 
-        visited = set()
-        clones = {}
+        old_to_new = {}
 
-        def dfs(v):
-            visited.add(v)
-            if v.val not in clones:
-                clone = Node(v.val, [])
-                clones[v.val] = clone
-            for neighbor in v.neighbors:
-                if neighbor not in visited:
-                    dfs(neighbor)
-                clones[v.val].neighbors.append(clones[neighbor.val])
+        def dfs(n):
+            if n in old_to_new:
+                return
+            old_to_new[n] = Node(n.val)
+
+            for nei in n.neighbors:
+                dfs(nei)
+                # here, the neighbor already got cloned in the recursive call!
+                old_to_new[n].neighbors.append(old_to_new[nei])
 
         dfs(node)
-        return clones[1]
+
+        return old_to_new[node]

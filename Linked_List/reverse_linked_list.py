@@ -10,6 +10,7 @@ class ListNode:
 
 class Solution:
     def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        return None
         # TODO: implement recursively
 
     def reverse_iteratively(self, head):
